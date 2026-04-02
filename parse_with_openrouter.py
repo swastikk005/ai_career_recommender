@@ -32,7 +32,7 @@ def extract_resume_text(file_path: str) -> str:
 
 
 # -------- OpenRouter enrichment (optional) --------
-OPENROUTER_API_KEY = os.getenv("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", "").strip()
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini").strip()
 
