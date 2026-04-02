@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <title>AI Career Recommender</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #eaf6ff;
+      --card: #ffffff;
+      --text: #0b2447;
+      --muted: #4a5568;
+      --accent: #2563eb;
+      --accent-2: #00b2ff;
+      --chip: #eef2ff;
+      --shadow: rgba(0,0,0,0.08);
+    }
+    [data-theme="dark"] {
+      --bg: #0b1220;
+      --card: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #60a5fa;
+      --accent-2: #22d3ee;
+      --chip: #1f2937;
+      --shadow: rgba(0,0,0,0.3);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Roboto, Ubuntu, Cantarell, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg), #f5faff);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 40px 15px;
+      transition: background 0.4s ease;
+    }
+    [data-theme="dark"] body {
+      background: linear-gradient(135deg, #0b1220, #101827);
+    }
+
+    .wrap { width: 100%; max-width: 800px; animation: fadeIn 0.8s ease forwards; }
+    .header { text-align: center; margin-bottom: 28px; }
+    .title {
+      font-weight: 800; font-size: 34px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .subtitle { color: var(--muted); font-size: 16px; }
+    .toggle { margin-top: 12px; padding: 8px 14px; border-radius: 999px; border: 1px solid #93c5fd; cursor: pointer;
+      background: var(--card); color: var(--text); font-weight: 600; }
+    .toggle:hover { background: var(--accent); color: white; }
+
+    .card {
+      background: var(--card); border-radius: 18px; padding: 24px;
+      box-shadow: 0 8px 22px var(--shadow); margin-bottom: 22px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px var(--shadow); }
+
+    .highlight {
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 20px rgba(37,99,235,0.5);
+      transform: scale(1.02);
+    }
+
+    .uploader { display:flex; flex-direction: column; align-items: center; gap:16px; }
+    .btn {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: white; border: 0; padding: 12px 22px; border-radius: 12px; cursor: pointer;
+      font-weight: 600;
+    }
+
+    .role { font-weight: 700; font-size: 21px; margin: 4px 0; }
+    .badge { display:inline-block; padding:6px 12px; border-radius:999px; font-size:12px; background: var(--chip); }
+    .cities { display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
+    .chip { background: var(--chip); padding:6px 12px; border-radius:999px; font-size:12px; }
+
+    details summary { cursor: pointer; font-weight: 600; margin-top: 8px; }
+    details ul { margin-top: 6px; padding-left: 18px; }
+    details li { margin: 4px 0; }
+
+    .progress-bar {
+      width: 100%; height: 8px; border-radius: 6px;
+      background: #e2e8f0; overflow: hidden; margin: 8px 0;
+    }
+    .progress { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+
+    @keyframes fadeIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">AI Career Recommender</div>
+      <div class="subtitle">Upload your resume & explore your top 3 career paths 🚀</div>
+      <button class="toggle" id="modeToggle">Light</button>
+    </div>
+
+    <div class="card" style="text-align:center;">
+      <form class="uploader" action="/upload_resume" method="POST" enctype="multipart/form-data">
+        <input type="file" name="resume" accept=".pdf,.txt" required />
+        <button class="btn" type="submit">Analyze Resume</button>
+        {% if accuracy %}
+          <span class="badge">Model accuracy: {{ (accuracy * 100) | round(1) }}%</span>
+        {% endif %}
+      </form>
+    </div>
+
+    {% if results %}
+      {% for r in results %}
+        <div class="card {% if loop.index == 1 %}highlight{% endif %}">
+          <div class="role">💼 {{ r.role }}</div>
+          <span class="badge">Confidence: {{ (r.prob * 100) | round(1) }}%</span>
+          <div class="progress-bar"><div class="progress" style="width: {{ (r.prob * 100) | round(1) }}%"></div></div>
+          <p>{{ r.job_desc }}</p>
+          <div><strong>Salary:</strong> {{ r.salary_low }}–{{ r.salary_high }} LPA</div>
+          <div><strong>Growth Cities:</strong>
+            <div class="cities">{% for c in r.cities %}<span class="chip">{{ c }}</span>{% endfor %}</div>
+          </div>
+          <details>
+            <summary>See Job Openings</summary>
+            <ul>
+              {% for job in r.openings %}
+                <li>
+                  <a href="{{ job.link }}" target="_blank">
+                    {{ job.title }} – {{ job.company }} ({{ job.location }})
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </details>
+        </div>
+      {% endfor %}
+
+      <div class="card">
+        <h3 style="text-align:center; margin-bottom:10px;">Job Fit Confidence</h3>
+        <canvas id="careerChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h3 style="text-align:center; margin-bottom:10px;">Projected Job Growth (5 Years)</h3>
+        <canvas id="trendChart"></canvas>
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    const toggle = document.getElementById("modeToggle");
+    const html = document.documentElement;
+    toggle.addEventListener("click", () => {
+      const now = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      html.setAttribute("data-theme", now);
+      toggle.textContent = now === "dark" ? "Dark" : "Light";
+    });
+
+    {% if results %}
+      const ctx = document.getElementById('careerChart').getContext('2d');
+      const roles = [{% for r in results %}'{{ r.role }}',{% endfor %}];
+      const probs = [{% for r in results %}{{ (r.prob * 100) | round(1) }},{% endfor %}];
+      new Chart(ctx, {
+        type: 'pie',
+        data: { labels: roles, datasets: [{ data: probs, backgroundColor: ['#2563eb','#00b2ff','#22d3ee'] }] },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+      });
+
+      const tctx = document.getElementById('trendChart').getContext('2d');
+      const years = ["2025","2026","2027","2028","2029"];
+      new Chart(tctx, {
+        type: 'line',
+        data: {
+          labels: years,
+          datasets: [
+            {% for r in results %}
+            {
+              label: "{{ r.role }}",
+              data: [{{ (r.prob*80)|round }},{{ (r.prob*90)|round }},{{ (r.prob*100)|round }},{{ (r.prob*110)|round }},{{ (r.prob*120)|round }}],
+              borderColor: "{{ loop.index0 == 0 and '#2563eb' or (loop.index0 == 1 and '#00b2ff' or '#22d3ee') }}",
+              fill: false, tension: 0.3
+            },
+            {% endfor %}
+          ]
+        }
+      });
+    {% endif %}
+  </script>
+</body>
+</html>

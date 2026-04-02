@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+pymongo
+python-multipart
+openai>=1.0.0
+pydantic
+python-dotenv
+pdfplumber
+docx2txt
+python-magic-bin; platform_system == 'Windows'
+python-magic; platform_system != 'Windows'
+scikit-learn
+joblib
+pandas
+numpy

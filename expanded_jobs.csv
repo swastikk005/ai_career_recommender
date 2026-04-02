@@ -1,0 +1,11 @@
+role,description,salary_low,salary_high,cities,growth_rate
+Software Engineer,Develops and maintains software applications and systems,6,20,"Bangalore, Hyderabad, Pune, Chennai",12
+Data Scientist,Analyzes data to generate insights using AI/ML,7,25,"Bangalore, Hyderabad, Gurgaon, Pune",18
+AI Engineer,Designs and deploys AI/ML solutions for businesses,8,28,"Bangalore, Hyderabad, Chennai",20
+Cloud Architect,Designs cloud infrastructure and migration strategies,10,30,"Bangalore, Pune, Hyderabad",15
+Cybersecurity Specialist,Protects systems against cyber threats and vulnerabilities,8,24,"Bangalore, Gurgaon, Pune",17
+Business Analyst,Bridges business needs with technical solutions,5,15,"Mumbai, Bangalore, Delhi NCR",10
+Product Manager,Oversees product lifecycle and strategy,10,35,"Bangalore, Mumbai, Gurgaon",14
+Investment Banker,Advises clients on investments and manages portfolios,12,40,"Mumbai, Delhi NCR",9
+Accountant,Manages financial records, audits, and compliance,4,12,"Mumbai, Delhi, Bangalore",6
+UX Designer,Designs user interfaces with a focus on experience,5,18,"Bangalore, Pune, Hyderabad",11

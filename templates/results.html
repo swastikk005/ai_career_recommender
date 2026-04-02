@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <title>Career Recommendations</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #eaf6ff; --card: #ffffff; --text: #0b2447; --muted: #4a5568;
+      --accent: #2563eb; --accent-2: #00b2ff; --chip: #eef2ff;
+      --shadow: rgba(0,0,0,0.08);
+    }
+    [data-theme="dark"] {
+      --bg: #0b1220; --card: #111827; --text: #e5e7eb; --muted: #9ca3af;
+      --accent: #60a5fa; --accent-2: #22d3ee; --chip: #1f2937;
+      --shadow: rgba(0,0,0,0.3);
+    }
+    body {
+      margin: 0; font-family: 'Segoe UI', Roboto, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg), #f5faff);
+      min-height: 100vh; display: flex; justify-content: center;
+      padding: 30px 15px; transition: background 0.4s ease;
+    }
+    [data-theme="dark"] body { background: linear-gradient(135deg, #0b1220, #101827); }
+
+    .wrap { width: 100%; max-width: 900px; animation: fadeIn 0.8s ease forwards; }
+    .header { text-align: center; margin-bottom: 25px; }
+    .title { font-weight: 800; font-size: 30px; margin-bottom: 6px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .toggle { margin-top: 8px; padding: 6px 14px; border-radius: 999px; border: 1px solid #93c5fd; cursor: pointer;
+      background: var(--card); color: var(--text); font-weight: 600; }
+
+    .card { background: var(--card); border-radius: 18px; padding: 20px;
+      box-shadow: 0 6px 20px var(--shadow); margin-bottom: 20px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px var(--shadow); }
+
+    .role { font-weight: 700; font-size: 20px; margin-bottom: 6px; }
+    .badge { display:inline-block; padding:5px 10px; border-radius:999px; font-size:13px; background: var(--chip); margin-top:4px; }
+    .progress-bar { width: 100%; background: var(--chip); border-radius: 8px; overflow: hidden; margin: 10px 0; }
+    .progress-fill { height: 12px; background: linear-gradient(90deg,var(--accent),var(--accent-2)); width: 0; transition: width 1.5s ease; }
+    .cities { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+    .chip { background: var(--chip); padding:5px 10px; border-radius:999px; font-size:12px; }
+
+    .jobs { margin-top:10px; }
+    .job-item { padding:8px; border-bottom:1px solid #ccc; }
+    .job-item:last-child { border-bottom:0; }
+
+    @keyframes fadeIn { from {opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">Top Career Matches 🚀</div>
+      <button class="toggle" id="modeToggle">Light</button>
+    </div>
+
+    {% for r in results %}
+      <div class="card">
+        <div class="role">{{ r.role }}</div>
+        <span class="badge">Confidence: {{ (r.prob*100)|round(1) }}%</span>
+
+        <div class="progress-bar"><div class="progress-fill" style="width:{{ (r.prob*100)|round(1) }}%"></div></div>
+
+        <div><strong>Salary:</strong> ₹{{ r.salary_low }}–{{ r.salary_high }} LPA</div>
+        <div><strong>Growth Rate:</strong> {{ r.growth }}</div>
+        <div><strong>Cities:</strong>
+          <div class="cities">{% for c in r.cities %}<span class="chip">{{ c }}</span>{% endfor %}</div>
+        </div>
+        <p>{{ r.desc }}</p>
+
+        <!-- Expand Jobs -->
+        <button onclick="loadJobs('{{ r.role }}', this)">View Job Openings</button>
+        <div class="jobs" id="jobs-{{ loop.index }}"></div>
+      </div>
+    {% endfor %}
+
+    <!-- Charts -->
+    <div class="card">
+      <h3 style="text-align:center;">Job Fit Confidence</h3>
+      <canvas id="careerChart"></canvas>
+    </div>
+    <div class="card">
+      <h3 style="text-align:center;">Projected Job Growth (5 Years)</h3>
+      <canvas id="trendChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // Dark mode toggle
+    const toggle = document.getElementById("modeToggle");
+    const html = document.documentElement;
+    toggle.addEventListener("click", () => {
+      const now = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      html.setAttribute("data-theme", now);
+      toggle.textContent = now === "dark" ? "Dark" : "Light";
+    });
+
+    // Chart data
+    const roles = {{ results | tojson }};
+    const ctx = document.getElementById('careerChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: roles.map(r => r.role),
+        datasets: [{ data: roles.map(r => (r.prob*100).toFixed(1)),
+          backgroundColor: ['#2563eb','#00b2ff','#22d3ee'] }]
+      }
+    });
+
+    const tctx = document.getElementById('trendChart').getContext('2d');
+    new Chart(tctx, {
+      type: 'line',
+      data: {
+        labels: ["2025","2026","2027","2028","2029"],
+        datasets: roles.map((r,i)=>({
+          label: r.role,
+          data:[r.prob*80,r.prob*90,r.prob*100,r.prob*110,r.prob*120],
+          borderColor: ['#2563eb','#00b2ff','#22d3ee'][i],
+          fill:false,tension:0.3
+        }))
+      }
+    });
+
+    // Load jobs
+    async function loadJobs(role, btn){
+      btn.disabled = true; btn.textContent="Loading...";
+      const id = "jobs-"+btn.parentElement.querySelector(".role").textContent;
+      const container = btn.nextElementSibling;
+      try{
+        const res = await fetch("/jobs/"+role);
+        const data = await res.json();
+        if(data.error){
+          container.innerHTML = `<p style='color:red'>${data.error}</p>`;
+        } else {
+          container.innerHTML = data.map(j=>`
+            <div class="job-item">
+              <b>${j.title}</b> - ${j.company} <br>
+              <small>${j.location}</small> <br>
+              <a href="${j.link}" target="_blank">Apply</a>
+            </div>`).join("");
+        }
+      }catch(e){
+        container.innerHTML = `<p style='color:red'>Error loading jobs.</p>`;
+      }
+      btn.disabled=false; btn.textContent="View Job Openings";
+    }
+  </script>
+</body>
+</html>

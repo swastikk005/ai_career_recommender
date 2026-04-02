@@ -1,0 +1,120 @@
+[
+  {
+    "career": "AI Engineer",
+    "skills": [
+      "Python",
+      "Machine Learning",
+      "Deep Learning",
+      "TensorFlow",
+      "PyTorch",
+      "NLP"
+    ],
+    "salary": "₹8-25 LPA",
+    "demand": "High",
+    "growth": "35%",
+    "description": "Develops and implements artificial intelligence models and algorithms."
+  },
+  {
+    "career": "Data Scientist",
+    "skills": [
+      "Python",
+      "R",
+      "SQL",
+      "Statistics",
+      "Data Visualization",
+      "Pandas"
+    ],
+    "salary": "₹7-20 LPA",
+    "demand": "High",
+    "growth": "30%",
+    "description": "Analyzes complex data sets to help organizations make informed decisions."
+  },
+  {
+    "career": "Software Engineer",
+    "skills": [
+      "Java",
+      "Python",
+      "C++",
+      "Data Structures",
+      "Algorithms",
+      "System Design"
+    ],
+    "salary": "₹5-18 LPA",
+    "demand": "Very High",
+    "growth": "22%",
+    "description": "Analyzes, designs and develops software applications across various platforms."
+  },
+  {
+    "career": "Backend Developer",
+    "skills": [
+      "Node.js",
+      "Python",
+      "Java",
+      "SQL",
+      "APIs",
+      "Microservices"
+    ],
+    "salary": "₹6-18 LPA",
+    "demand": "Very High",
+    "growth": "25%",
+    "description": "Builds and maintains the server-side logic and databases of web applications."
+  },
+  {
+    "career": "Frontend Developer",
+    "skills": [
+      "JavaScript",
+      "React",
+      "Next.js",
+      "CSS",
+      "Tailwind CSS",
+      "TypeScript"
+    ],
+    "salary": "₹5-15 LPA",
+    "demand": "High",
+    "growth": "20%",
+    "description": "Creates the visual and interactive parts of a website or application."
+  },
+  {
+    "career": "DevOps Engineer",
+    "skills": [
+      "Docker",
+      "Kubernetes",
+      "AWS",
+      "CI/CD",
+      "Linux",
+      "Terraform"
+    ],
+    "salary": "₹8-22 LPA",
+    "demand": "High",
+    "growth": "28%",
+    "description": "Bridges the gap between development and operations for faster software delivery."
+  },
+  {
+    "career": "Cloud Architect",
+    "skills": [
+      "Cloud Computing",
+      "AWS/Azure/GCP",
+      "Architecture Design",
+      "Security",
+      "Networking"
+    ],
+    "salary": "₹15-35 LPA",
+    "demand": "Very High",
+    "growth": "32%",
+    "description": "Designs and migrates enterprise-grade applications to cloud environments."
+  },
+  {
+    "career": "Product Analyst",
+    "skills": [
+      "Data Analysis",
+      "Product Sense",
+      "SQL",
+      "A/B Testing",
+      "Excel"
+    ],
+    "salary": "₹6-14 LPA",
+    "demand": "Medium",
+    "growth": "15%",
+    "description": "Evaluates product performance and provides insights for improvement."
+  }
+]
