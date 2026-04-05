@@ -48,10 +48,10 @@ This guide outlines the steps to deploy the application to a production environm
 
 ---
 
-## 4. Final Verification
-1. Ensure the frontend `NEXT_PUBLIC_API_URL` correctly points to the deployed backend.
-2. Check that the `.env` variables are correctly set in the production environment.
-3. Verify that the AI features (parsing, recommendations) work in production.
+## 5. Troubleshooting Common Issues
+- **Error: Could not read package.json**: This happens if Render thinks your project is a Node.js app. 
+  - **Solution**: Go to **Settings** on Render and ensure the **Runtime** is set to **Python 3**. Avoid having a `package.json` or `package-lock.json` in the root if you are only deploying the API.
+  - **Start Command**: Make sure it is exactly `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`.
 
 ---
 
