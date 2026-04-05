@@ -9,7 +9,8 @@ pdfplumber
 docx2txt
 python-magic-bin; platform_system == 'Windows'
 python-magic; platform_system != 'Windows'
-scikit-learn
+scikit-learn>=1.4.0
 joblib
-pandas
-numpy
+pandas>=2.1.0
+numpy>=1.26.0
+gunicorn

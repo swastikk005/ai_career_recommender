@@ -8,8 +8,12 @@ This guide outlines the steps to deploy the application to a production environm
 1. Create a new "Web Service" on [Render](https://render.com).
 2. Connect your GitHub repository.
 3. Set the **Build Command**: `pip install -r backend/requirements.txt`
-4. Set the **Start Command**: `python backend/main.py`
-5. Add **Environment Variables**:
+4. Set the **Start Command**: `uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
+5. (Alternative) If you set the **Root Directory** to `backend` on Render:
+    - **Build Command**: `pip install -r requirements.txt`
+    - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+6. Add **Environment Variables**:
+   - `PYTHON_VERSION`: `3.10.0` (Critical to avoid build issues)
    - `OPENAI_API_KEY`: Your secret key.
    - `MONGODB_URI`: Your database connection string.
 
@@ -26,11 +30,13 @@ This guide outlines the steps to deploy the application to a production environm
 
 ### Option A: Vercel (Recommended)
 1. Import your project from GitHub into [Vercel](https://vercel.com).
-2. Select the `frontend` directory as the root.
-3. The build settings should automatically detect Next.js.
-4. Add **Environment Variables**:
+2. Select the `frontend` directory as the **Root Directory**.
+3. Set the **Build Command**: `npm install && npm run build`
+4. Set the **Start Command**: `npm start`
+5. The build settings should automatically detect Next.js.
+6. Add **Environment Variables**:
    - `NEXT_PUBLIC_API_URL`: The URL of your deployed backend (e.g., `https://api-career-recommender.onrender.com`).
-5. Click **Deploy**.
+7. Click **Deploy**.
 
 ---
 
